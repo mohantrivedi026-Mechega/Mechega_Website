@@ -1,0 +1,27 @@
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userprefs
+*.log
+*.nupkg
+*.snk
+*.pdb
+*.cache
+*.db
+*.db-journal
+.vscode/
+publish/
+*.publishsettings
+*.env
+.DS_Store
+node_modules/
+.nuget/
+
+# Rider
+.idea/
+
+# Keep VS Code extensions.json
+.vscode/
+!/.vscode/extensions.json

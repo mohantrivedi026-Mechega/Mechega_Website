@@ -1,0 +1,88 @@
+@page "/contact"
+
+@inject HttpClient Http
+
+<PageTitle>Contact</PageTitle>
+
+<h1>Contact</h1>
+
+<p>Get in touch with us for quotes, inquiries, or technical discussions.</p>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="alert @statusClass">@statusMessage</div>
+}
+
+<EditForm Model="contactModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="contactModel.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <InputText type="email" class="form-control" @bind-Value="contactModel.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <InputText type="tel" class="form-control" @bind-Value="contactModel.Phone" placeholder="Optional" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Message</label>
+        <InputTextArea class="form-control" @bind-Value="contactModel.Message" />
+    </div>
+
+    <button class="btn btn-primary" type="submit" disabled="@isSubmitting">@buttonText</button>
+</EditForm>
+
+@code {
+    private ContactModel contactModel = new();
+    private bool isSubmitting = false;
+    private string? statusMessage;
+    private string statusClass = "alert-success";
+    private string buttonText => isSubmitting ? "Sending..." : "Send";
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+        statusMessage = null;
+        try
+        {
+            var resp = await Http.PostAsJsonAsync("/api/contact", contactModel);
+            if (resp.IsSuccessStatusCode)
+            {
+                statusClass = "alert-success";
+                statusMessage = "Message sent — we'll get back to you soon.";
+                contactModel = new ContactModel();
+            }
+            else
+            {
+                statusClass = "alert-danger";
+                statusMessage = "Failed to send message. Please try again later.";
+            }
+        }
+        catch (Exception ex)
+        {
+            statusClass = "alert-danger";
+            statusMessage = "Error sending message: " + ex.Message;
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private class ContactModel
+    {
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string? Message { get; set; }
+        public string? Subject { get; set; }
+    }
+}
