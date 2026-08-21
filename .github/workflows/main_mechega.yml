@@ -24,20 +24,16 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./Mechega_Website/Mechega_Website.csproj --configuration Release --no-restore
 
       - name: dotnet publish
         run: dotnet publish ./Mechega_Website/Mechega_Website.csproj -c Release -o ./publish
 
-
-      -- name: Deploy to Azure Web App
-   id: deploy-to-webapp
-  uses: azure/webapps-deploy@v3
-  with:
-    app-name: 'Mechega'
-    slot-name: 'Production'
-    package: ./.net-app
-
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
 
   deploy:
     runs-on: windows-latest
@@ -65,5 +61,4 @@ jobs:
         with:
           app-name: 'Mechega'
           slot-name: 'Production'
-          package: .
-          
+          package: ./.net-app
