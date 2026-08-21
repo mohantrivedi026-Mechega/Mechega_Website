@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # Required for actions/checkout
       
     steps:
       - uses: actions/checkout@v4
@@ -24,10 +24,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Build with dotnet
-        run: dotnet build .Mechega.Web/Mechega.Web.csproj --configuration Release --no-restore
+        run: dotnet build ./Mechega.Web/Mechega.Web.csproj --configuration Release --no-restore
 
       - name: dotnet publish
-        run: dotnet publish .Mechega.Web/Mechega.Web.csproj -c Release -o ./publish
+        run: dotnet publish ./Mechega.Web/Mechega.Web.csproj -c Release -o ./publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -39,8 +39,8 @@ jobs:
     runs-on: windows-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write # Required for requesting the JWT
+      contents: read # Required for actions/checkout
 
     steps:
       - name: Download artifact from build job
