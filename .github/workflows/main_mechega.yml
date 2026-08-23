@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read # Required for actions/checkout
+      contents: read
       
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +22,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ./Mechega.Web/Mechega.Web.csproj
 
       - name: Build with dotnet
         run: dotnet build ./Mechega.Web/Mechega.Web.csproj --configuration Release --no-restore
@@ -39,8 +42,8 @@ jobs:
     runs-on: windows-latest
     needs: build
     permissions:
-      id-token: write # Required for requesting the JWT
-      contents: read # Required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
